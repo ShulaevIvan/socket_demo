@@ -4,12 +4,41 @@
     <script  type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script> const socket = io();</script>
     <script type="text/javascript" src="/js/main.js"></script>
+    <link rel="stylesheet" href="/css/main.css" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
 </head>
 <body>
+  <div class="chat-wrap">
+    <div class="users">
+      <ul class="users-list">
+      </ul>
+    </div>
+    <div class="chat-title-row">
+      <div>Mainchat</div>
+      <div>
+        Private
+        <select class="users-select">
+          <options class="users-select-options">
+
+          </options>
+        
+        </select>
+        <button class="unselectbtn">unselect</button>
+      </div>
+    </div>
+    <div class="chat-row">
+      <div class="chat-messages"></div>
+      <div class="chat-private">2</div>
+    </div>
+    
+    <div class="chat-input-wrap">
+      <textarea class="chat-input"></textarea>
+      <button class="chat-send-btn">send</button>
+    </div>
+  </div>
     
 </body>
 </html>
