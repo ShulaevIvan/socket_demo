@@ -1,5 +1,7 @@
 window.addEventListener('DOMContentLoaded', () => {
+    const currentUser = {id: ''};
     const chatWrap = document.querySelector('.chat-wrap');
+    const chatPrivateWrap = document.querySelector('.chat-private');
     const usersList = chatWrap.querySelector('.users-list');
     const chatMessages = chatWrap.querySelector('.chat-messages');
     const chatInput = chatWrap.querySelector('.chat-input');
@@ -11,7 +13,13 @@ window.addEventListener('DOMContentLoaded', () => {
     sendBtn.addEventListener('click', (e) => {
         e.preventDefault();
         if (userSelected.selected && userSelected.user) {
-            console.log('test')
+            socket.emit('private', {
+                msg: chatInput.value,
+                msgFrom: currentUser.id,
+                msgTo: userSelected.user,
+                data: 'test',
+            });
+            chatInput.value = '';
             return;
         }
         socket.emit('message', {'msg': chatInput.value});
@@ -40,10 +48,11 @@ window.addEventListener('DOMContentLoaded', () => {
         userSelectWrap.appendChild(option);
     };
 
-    const addUserToList = (userName) => {
+    const addUserToList = (userName, strong) => {
         const li = document.createElement('li');
         li.textContent = userName;
         li.classList.add('user-item');
+        strong ? li.classList.add('bold-text') : '';
         createSelectUser(userName);
         return li;
     };
@@ -72,7 +81,7 @@ window.addEventListener('DOMContentLoaded', () => {
             allUserOptions.forEach((item) => item.remove());
         }
         msgObj.users.forEach((username) => {
-            const user = addUserToList(username);
+            const user = addUserToList(username, strong = username === currentUser.id ? true : false);
             usersList.appendChild(user);
         });
     });
@@ -82,6 +91,20 @@ window.addEventListener('DOMContentLoaded', () => {
         if (message) chatMessages.appendChild(message);
         chatMessages.scrollTo(0, chatMessages.scrollHeight);
         chatInput.value = '';
+    });
+
+    socket.on('private', (msgData) => {
+        const message = createMessage(msgData.msg, msgData.msgFrom);
+        chatPrivateWrap.appendChild(message)
+    });
+
+    socket.on('connected', (socketId) => {
+        currentUser.id = socketId;
+        usersList.querySelectorAll('.user-item').forEach((userItem) => {
+            if (userItem.textContent === currentUser.id) {
+                userItem.classList.add('bold-text');
+            }
+        });
     });
 
     userSelectWrap.addEventListener('change', selectUser);

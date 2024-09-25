@@ -3,7 +3,7 @@
     flex-direction: column;
     flex-wrap: wrap;
     width: 100%;
-    max-width: 800px;
+    max-width: 830px;
 }
 .chat-messages,
 .chat-input-wrap {
@@ -59,4 +59,7 @@
     font-size: 20px;
     font-weight: bold;
     justify-content: space-between;
+}
+.bold-text {
+    font-weight: bold;
 }

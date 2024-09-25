@@ -1,10 +1,11 @@
 const io = require('../app');
 
-
 io.on('connection', (socket) => {
     console.log('New websocket connected');
     updateClients('checkUsers');
-
+    const room = (`room_${socket.id}`);
+    socket.join(room);
+    socket.emit('connected', socket.id);
 
     socket.on('disconnect', () => {
       socket.disconnect();
@@ -15,6 +16,12 @@ io.on('connection', (socket) => {
     socket.on('message', (msgData) => {
       msgData.user = socket.id;
       io.sockets.emit('message', msgData);
+    });
+
+    socket.on('private', (msg) => {
+      const room = (`room_${msg.msgTo}`);
+      socket.join(room);
+      io.sockets.in(room).emit('private', msg);
     });
 });
 
